@@ -16,12 +16,16 @@
     "@prisma/client": "^5.20.0",
     "cors": "^2.8.5",
     "express": "^4.21.0",
+    "handlebars": "^4.7.8",
+    "nodemailer": "^6.9.15",
     "prisma": "^5.20.0"
   },
   "devDependencies": {
     "@types/cors": "^2.8.17",
     "@types/express": "^5.0.0",
+    "@types/handlebars": "^4.1.0",
     "@types/node": "^22.7.4",
+    "@types/nodemailer": "^6.4.16",
     "dotenv": "^16.4.5"
   }
 }
