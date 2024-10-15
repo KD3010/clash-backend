@@ -14,11 +14,13 @@
   "description": "",
   "dependencies": {
     "@prisma/client": "^5.20.0",
+    "bullmq": "^5.17.1",
     "cors": "^2.8.5",
     "express": "^4.21.0",
     "handlebars": "^4.7.8",
     "nodemailer": "^6.9.15",
-    "prisma": "^5.20.0"
+    "prisma": "^5.20.0",
+    "zod": "^3.23.8"
   },
   "devDependencies": {
     "@types/cors": "^2.8.17",

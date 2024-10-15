@@ -1,8 +1,6 @@
 import nodemailer from 'nodemailer';
-import handlebars from 'handlebars';
-import fs from 'fs'
 
-const transporter = nodemailer.createTransport({
+export const transporter = nodemailer.createTransport({
     host: process.env.SMTP_HOST,
     secure: false,
     service: 'gmail',
@@ -12,20 +10,13 @@ const transporter = nodemailer.createTransport({
     }
 })
 
-export const sendEmail = async (to: string) => {
+export const sendEmail = async (to: string, subject: string, body: string) => {
     try {
-        const source = fs.readFileSync(__dirname + '/email_template.html', 'utf-8').toString();
-        const template = handlebars.compile(source);
-
-        const replacements = {
-            username: "Mana"
-        }
-
         await transporter.sendMail({
             from: process.env.FROM,
             to: to,
-            subject: "Ready to Clash? Help Us Decide Which Image Rules Them All!",
-            html: template(replacements)
+            subject: subject,
+            html: body
         })
     } catch(error) {
         console.log(error)
