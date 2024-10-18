@@ -14,14 +14,14 @@ datasource db {
 }
 
 model User {
-  id Int @id @default(autoincrement())
-  name String @db.VarChar(191)
-  email String @unique
-  password String
+  id                   Int       @id @default(autoincrement())
+  name                 String    @db.VarChar(191)
+  email                String    @unique
+  password             String
   password_reset_token String?
-  token_sent_at DateTime?
-  email_verified_at DateTime?
-  email_verify_token String?
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  token_sent_at        DateTime?  @default(now())
+  email_verified_at    DateTime?
+  email_verify_token   String?
+  createdAt            DateTime  @default(now())
+  updatedAt            DateTime  @updatedAt
 }

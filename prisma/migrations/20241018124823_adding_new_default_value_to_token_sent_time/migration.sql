@@ -1,0 +1,2 @@
+-- AlterTable
+ALTER TABLE "User" ALTER COLUMN "token_sent_at" SET DEFAULT CURRENT_TIMESTAMP;

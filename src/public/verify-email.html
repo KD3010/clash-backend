@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Ubuntu:ital,wght@0,300;0,400;0,500;0,700;1,300;1,400;1,500;1,700&display=swap');
+
+        * {
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Ubuntu';
+            letter-spacing: 1px;
+            font-size: 18px;
+            word-spacing: 2px;
+            padding: 0 5rem;
+        }
+        
+
+        header {
+            margin: 10px 0;
+        }
+
+        a {
+            color: rgb(37, 99, 235);
+            text-decoration: none;
+        }
+
+        .body-closer {
+            margin-top: 3rem;
+        }
+
+        li {
+            text-align: left;
+            margin-top: 1rem;
+        }
+
+        .html-title {
+            text-align: center;
+            background-clip: text;
+            color: transparent;
+            background-image: linear-gradient(to right, rgb(37, 99, 235), rgb(96, 165, 250));
+            font-weight: 900;
+        }
+
+        .what-is-clash {
+            margin-bottom: 10px;
+        }
+
+        .bubble-div {
+            margin-top: 2rem;
+        }
+
+        footer {
+            margin: 2rem 0;
+        }
+
+
+    </style>
+</head>
+<body>
+    <section class="dark">
+        <header>
+            <div>
+                <h1 class="html-title">Hi {{username}},</h1>
+                <h3>You’re almost there! Before you dive into the action, we need to verify your email to unlock your full experience on Clash. This helps keep your account secure and ensures you never miss a vote!</h3>
+            </div>
+        </header>
+        <p class="what-is-clash"> Please verify your account:</p>
+        <a href={{link}} target="_blank">Please click here to verify your account</a>
+        <p>If you are not able to click verify using the above link, copy the below link and paste it in your browser to verify your account</p>
+   
+        <p>{{link}}</p>
+
+        <p>Once you’re verified, you can start voting, commenting, and helping us decide which images deserve the crown.</p>
+        <p>If you didn’t sign up for Clash, you can safely ignore this email.</p>
+    </section>
+</body>
+</html>
