@@ -113,7 +113,7 @@ export const verifyEmail = async (req: Request, res: Response) => {
         })
     }
 
-    await prisma.user.update({
+    const updatedUser = await prisma.user.update({
         data: {
             email_verified_at: new Date().toISOString(),
             email_verify_token: null
@@ -123,5 +123,5 @@ export const verifyEmail = async (req: Request, res: Response) => {
         }
     })
 
-    res.redirect(process.env.CLIENT_APP_URL + "/login");
+    updatedUser && res.redirect(process.env.CLIENT_APP_URL + "/login");
 }
