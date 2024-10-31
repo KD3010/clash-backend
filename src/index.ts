@@ -27,7 +27,7 @@ app.get("/", async (_: Request, res: Response) => {
     });
 
     res.status(200).json({
-        message: "MAIL SENT SUCCESFULLY"
+        message: "Happy Diwali!"
     })
 })
 
