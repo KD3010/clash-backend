@@ -8,3 +8,8 @@ export const registrationSchema = z.object({
     confirm_password: z.string(),
 })
 .refine((data) => data.password === data.confirm_password, {message: 'Passwords do not match', path: ['confirm_password']});
+
+export const loginSchema = z.object({
+    email: z.string({message: "Please enter a valid email"}).email({message: "Please enter a valid email"}),
+    password: z.string({ message: "Password is required" }).regex(password_regex, {message: password_error})
+})

@@ -1,12 +1,13 @@
 
 import { Request, Response } from 'express';
-import { registrationSchema } from "../validations/authValidations";
+import { loginSchema, registrationSchema } from "../validations/authValidations";
 import { formatError, renderEmailTemplate } from "../helper";
 import prisma from "../config/dbconfig";
 import { responseType } from "../constants";
 import bcrypt from 'bcrypt';
 import { v4 as uuid } from 'uuid';
 import { EmailJobs } from '../jobs';
+import jwt from 'jsonwebtoken';
 
 const generateSalt = async() => await bcrypt.genSalt(10);
 const generateToken = async() => await bcrypt.hash(uuid(), await generateSalt())
@@ -113,6 +114,18 @@ export const verifyEmail = async (req: Request, res: Response) => {
         })
     }
 
+    const template = renderEmailTemplate('onboarding-email.html');
+
+    const replacements = {
+        username: user?.name
+    }
+    
+    await EmailJobs.emailQueue.add('emailQueue', {
+        to: user?.email,
+        subject: "Ready to Clash? Help Us Decide Which Image Rules Them All!",
+        body: template(replacements)
+    });
+
     const updatedUser = await prisma.user.update({
         data: {
             email_verified_at: new Date().toISOString(),
@@ -124,4 +137,47 @@ export const verifyEmail = async (req: Request, res: Response) => {
     })
 
     updatedUser && res.redirect(process.env.CLIENT_APP_URL + "/login");
+}
+
+export const login = async (req: Request, res: Response) => {
+    const validation = loginSchema.safeParse(req.body);
+
+    if(validation.error) {
+        res.status(422).json({
+            type: responseType.FAILED,
+            message: validation.error.message,
+            error: validation.error
+        })
+    }
+
+    const user = await prisma.user.findUnique({
+        where: {
+            email: validation.data?.email
+        }
+    }) || null;
+
+    if(!user) {
+        res.status(422).json({
+            type: responseType.FAILED,
+            message: 'User does not exist',
+            error: {}
+        })
+    }
+
+    const JWTPaylod = {
+        id: user?.id,
+        name: user?.name,
+        email: user?.email
+    }
+
+    const token = jwt.sign(JWTPaylod, process.env.JWT_SECRET!, { expiresIn: '30d' });
+
+    res.status(201).json({
+        type: responseType.SUCCESS,
+        message: "Logged in successfully",
+        data: {
+            ...JWTPaylod,
+            token: `Bearer ${token}`
+        }
+    })
 }
