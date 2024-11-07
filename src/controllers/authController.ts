@@ -8,6 +8,7 @@ import bcrypt from 'bcrypt';
 import { v4 as uuid } from 'uuid';
 import { EmailJobs } from '../jobs';
 import jwt from 'jsonwebtoken';
+import type { IRequest } from '../custom-types';
 
 const generateSalt = async() => await bcrypt.genSalt(10);
 const generateToken = async() => await bcrypt.hash(uuid(), await generateSalt())
@@ -178,6 +179,27 @@ export const login = async (req: Request, res: Response) => {
         data: {
             ...JWTPaylod,
             token: `Bearer ${token}`
+        }
+    })
+}
+
+export const logout = async (req: IRequest, res: Response) => {
+    
+    if(!req.headers.authorization && !req.user) {
+        res.status(401).json({
+            type: responseType.FAILED,
+            MESSAGE: "Unauthorized",
+            error: {}
+        })
+    }
+
+    req.user = null;
+
+    res.status(201).json({
+        type: responseType.SUCCESS,
+        message: "Logged out successfully",
+        data: {
+            user: req.user
         }
     })
 }

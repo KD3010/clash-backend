@@ -1,19 +1,11 @@
-import type { NextFunction, Request, Response } from "express";
+import type { NextFunction, Response } from "express";
 import { responseType } from "../constants";
 import jwt from "jsonwebtoken";
+import type { AuthUser, IRequest } from "../custom-types";
 
-export const isAuthorized = async (req: Request, res: Response, next: NextFunction) => {
-    const authHeaders = req.headers.authorization
-
-    if(!authHeaders) {
-        return res.status(401).json({
-            type: responseType.FAILED,
-            message: "Unauthorized",
-            error: new Error("User not authorized")
-        })
-    };
-
-    const token = authHeaders.split(" ")[1];
+export const isAuthorized = (req: IRequest, res: Response, next: NextFunction): any => {
+    const authHeaders = req.headers.authorization;
+    const token = authHeaders?.split(" ")[1];
 
     if(!token) {
         return res.status(401).json({
@@ -25,7 +17,7 @@ export const isAuthorized = async (req: Request, res: Response, next: NextFuncti
 
     jwt.verify(token, process.env.JWT_SECRET!, (err, user) => {
         if(err) {
-            res.status(401).json({
+            return res.status(401).json({
                 type: responseType.FAILED,
                 message: "Unauthorized",
                 error: new Error("User not authorized")
@@ -34,5 +26,5 @@ export const isAuthorized = async (req: Request, res: Response, next: NextFuncti
 
         req.user = user as AuthUser;
         next();
-    })
+    });
 }
