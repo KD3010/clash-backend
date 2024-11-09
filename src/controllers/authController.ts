@@ -140,14 +140,14 @@ export const verifyEmail = async (req: Request, res: Response) => {
     updatedUser && res.redirect(process.env.CLIENT_APP_URL + "/login");
 }
 
-export const login = async (req: Request, res: Response) => {
+export const login = async (req: Request, res: Response): Promise<any> => {
     const validation = loginSchema.safeParse(req.body);
 
     if(validation.error) {
         res.status(422).json({
             type: responseType.FAILED,
-            message: validation.error.message,
-            error: validation.error
+            message: "Invalid credentials",
+            error: formatError(validation.error)
         })
     }
 
@@ -158,9 +158,25 @@ export const login = async (req: Request, res: Response) => {
     }) || null;
 
     if(!user) {
-        res.status(422).json({
+        return res.status(422).json({
             type: responseType.FAILED,
             message: 'User does not exist',
+            error: {}
+        })
+    }
+
+    if(validation?.data && !bcrypt.compareSync(validation?.data.password, user?.password)) {
+        return res.status(422).json({
+            type: responseType.FAILED,
+            message: "Invalid credentials",
+            error: {}
+        })
+    }
+
+    if(validation?.data && !user?.email_verified_at) {
+        return res.status(422).json({
+            type: responseType.FAILED,
+            message: "Please verify your email",
             error: {}
         })
     }
@@ -173,7 +189,7 @@ export const login = async (req: Request, res: Response) => {
 
     const token = jwt.sign(JWTPaylod, process.env.JWT_SECRET!, { expiresIn: '30d' });
 
-    res.status(201).json({
+    return res.status(201).json({
         type: responseType.SUCCESS,
         message: "Logged in successfully",
         data: {

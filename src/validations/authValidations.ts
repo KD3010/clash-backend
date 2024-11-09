@@ -11,5 +11,5 @@ export const registrationSchema = z.object({
 
 export const loginSchema = z.object({
     email: z.string({message: "Please enter a valid email"}).email({message: "Please enter a valid email"}),
-    password: z.string({ message: "Password is required" }).regex(password_regex, {message: password_error})
+    password: z.string({ message: "Password is required" }).min(1, {message: "Password is required"})
 })
