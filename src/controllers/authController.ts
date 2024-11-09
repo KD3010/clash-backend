@@ -199,6 +199,57 @@ export const login = async (req: Request, res: Response): Promise<any> => {
     })
 }
 
+export const verifyLoginCredentials = async (req: Request, res: Response): Promise<any> => {
+    const validation = loginSchema.safeParse(req.body);
+
+    if(validation.error) {
+        return res.status(422).json({
+            type: responseType.FAILED,
+            message: "Invalid credentials",
+            error: formatError(validation.error)
+        })
+    }
+
+    const user = validation?.data?.email && await prisma.user.findUnique({
+        where: {
+            email: validation.data?.email
+        }
+    }) || null;
+
+    if(!user) {
+        return res.status(422).json({
+            type: responseType.FAILED,
+            message: 'User does not exist',
+            error: {}
+        })
+    }
+
+    if(validation?.data && !bcrypt.compareSync(validation?.data.password, user?.password)) {
+        return res.status(422).json({
+            type: responseType.FAILED,
+            message: "Invalid credentials",
+            error: {}
+        })
+    }
+
+    if(validation?.data && !user?.email_verified_at) {
+        return res.status(422).json({
+            type: responseType.FAILED,
+            message: "Please verify your email",
+            error: {}
+        })
+    }
+
+    if(validation.success) {
+        return res.status(201).json({
+            type: responseType.SUCCESS,
+            message: "Logged in successfully",
+            data: {
+            }
+        })
+    }
+}
+
 export const logout = async (req: IRequest, res: Response) => {
     
     if(!req.headers.authorization && !req.user) {
